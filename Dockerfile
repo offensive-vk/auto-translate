@@ -13,6 +13,9 @@ COPY package*.json ./
 # Install the required dependencies
 RUN pnpm install
 
+# Copy the rest files
+COPY . .
+
 # Build the Project
 RUN pnpm run build
 
