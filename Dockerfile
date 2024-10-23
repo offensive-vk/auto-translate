@@ -4,11 +4,11 @@ FROM node:20-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
+# Setup Node and pnpm
+RUN npm i -g pnpm@9.0.0
+
 # Copy the necessary files to the container
 COPY package*.json ./
-COPY index.js ./
-COPY action.yml ./
-COPY readme.md ./
 
 # Install the required dependencies
 RUN pnpm install

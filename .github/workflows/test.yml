@@ -20,7 +20,8 @@ jobs:
       - name: Translate using Action
         uses: ./
         with:
-          lang: es
+          file: './README.md'
+          language: es
           committer: github-actions[bot]
           github-token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Translated Markdown File - Readme.md"

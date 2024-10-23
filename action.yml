@@ -5,7 +5,7 @@ description: Automatically Translate a MD File to Other Languages
 inputs:
   file:
     description: 'Path of File to Translate'
-    required: true
+    required: false
     default: 'README.md'
   github-token:
     description: 'GitHub Token Bearer for Authentication'

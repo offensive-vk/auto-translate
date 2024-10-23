@@ -5,6 +5,7 @@ const githubToken = core.getInput("github-token");
 const committer = core.getInput("committer") || "github-actions[bot]";
 const commitMessage = core.getInput("commit-message") || `Translated and Added README`;
 const commitOptions = core.getInput("commit-options") || "";
+const filePath = core.getInput("file") || "README.md";
 const lang = core.getInput("language") || "es";  // Default is 'es' if not provided
 const $ = require("@iamtraction/google-translate");
 const simpleGit = require("simple-git");
@@ -20,7 +21,7 @@ const toMarkdown = (ast) => unified().use(stringify).stringify(ast);
 
 // Identify README file
 const mainDir = ".";
-let README = readdirSync(mainDir).includes("readme.md") ? "readme.md" : "README.md";
+let README = readdirSync(mainDir).includes(filePath || "readme.md") ? "readme.md" : "README.md";
 const readme = readFileSync(join(mainDir, README), { encoding: "utf8" });
 const readmeAST = toAst(readme);
 
