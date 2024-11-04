@@ -29,7 +29,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'node20'
+  image: 'node:20'
 
 branding:
   icon: book-open
