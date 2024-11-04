@@ -6,7 +6,6 @@ inputs:
   repo-token:
     description: 'Repo scope github PAT'
     required: false
-    default: "${{ secrets.GITHUB_TOKEN }}"
   file:
     description: 'Path of File to Translate'
     required: false
