@@ -16,6 +16,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    
     "@actions/core": "^1.11.1",
     "@iamtraction/google-translate": "2.0.0",
     "http-proxy-agent": "^4.0.1",

@@ -1,88 +1,112 @@
-# Auto Translate Action
+# Auto Translate 📘
 
-## README Translation
-- [English](README.md)
-- [简体中文](README.zh-CN.md)
-- [繁体中文](README.zh-TW.md)
-- [हिंदी](README.hi.md)
-- [Française](README.fr.md)
-- [عربى](README.ar.md)
+[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
 
-**GitHub Action to translate Readme to any language**
+Automatically translate a Markdown file (e.g., README.md) to other languages and commit the translated version back to your repository.
 
-This is a GitHub Action that automatically translate the readme in your repo to a specified language. Currently it's in development for `<html>` Tags. It doesn't work perfectly.
+## 📖 Overview
 
-## Setup
+**Auto Translate** is a GitHub Action that uses Google Translate to create translated copies of Markdown files in your repository. This is especially useful for repositories with a global audience, making documentation accessible in multiple languages.
 
-1. **Add a workflow file** to your project (e.g. `.github/workflows/ci.yml`):
+## ✨ Features
+
+- Translates Markdown files to any specified language.
+- Commits the translated file to the repository.
+- Configurable commit message, committer, and additional commit options.
+
+## 🚀 Usage
+
+### Basic Example
+
+Add the following to your `.github/workflows/translate.yml` workflow file to set up **Auto Translate** in your repository:
+
 ```yaml
-name: Translate Files
-
+name: Translate README
 on:
   push:
     branches:
-      - master
+      - main
+
 jobs:
   translate:
-    name: Translate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Auto Translate README
+        uses: offensive-vk/auto-translate-action@master
         with:
-          node-version: 20.x
-
-      - name: Adding README - Chinese Simplified
-        uses: offensive-vk/auto-translate@master
-        with:
-          lang: zh-CN
-
-      - name: Adding README - Chinese Traditional
-        uses: offensive-vk/auto-translate@master
-        with:
-          lang: zh-TW
-
-      - name: Adding README - Hindi
-        uses: offensive-vk/auto-translate@master
-        with:
-          lang: hi
-
-      - name: Adding README - Arabic
-        uses: offensive-vk/auto-translate@master
-        with:
-          lang: ar
-
-      - name: Adding README - French
-        uses: offensive-vk/auto-translate@master
-        with:
-          lang: fr
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: 'README.md'
+          language: 'es'
 ```
 
-## Configuration
+This example translates the `README.md` file to Spanish (`es`) and commits the translated file `README.es.md` back to the repository.
 
-| `github-token` | Github Token for Bearer Authorization. | `${{ secrets.GITHUB_TOKEN }} | 
+### Inputs
 
-### Options
+| Input Name       | Description                                                                                  | Required | Default                                 |
+|------------------|----------------------------------------------------------------------------------------------|----------|-----------------------------------------|
+| `file`           | Path of the file to translate (relative to repository root).                                 | No       | `README.md`                             |
+| `github-token`   | GitHub token used to authenticate commits. Use `${{ secrets.GITHUB_TOKEN }}` in workflows.  | Yes      |                                         |
+| `committer`      | The name of the committer for the commit.                                                    | No       | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
+| `commit-message` | The commit message for the translation commit.                                               | No       | `Translated and Added README`           |
+| `commit-options` | Additional options for the `git commit` command.                                             | No       |                                         |
+| `language`       | The target language code for translation (e.g., `es`, `zh-CN`, `fr`).                       | No       | `es`                                    |
 
-You can configure the action further with the following options:
+### Example Workflow with Custom Commit Message
 
-- `lang`: The language you want to translate your readme to. The default is Simplified Chinese. (I'm a Ghanaian) The supported languages can be found below.
-  (default: `zh-CH`) (required: `false`)
+```yaml
+name: Translate README with Custom Message
+on:
+  workflow_dispatch:
 
-## Supported languages
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-languages supported can be found here https://cloud.google.com/translate/docs/languages
+      - name: Auto Translate README to French
+        uses: offensive-vk/auto-translate-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: 'README.md'
+          language: 'fr'
+          commit-message: 'Ajout de la traduction française du README'
+```
 
-### Issues
+## ⚙️ Supported Languages
 
-Check [here](https://github.com/offensive-vk/auto-translate/issues/1) for issues related to this action.
+Use any language code supported by Google Translate (e.g., `es` for Spanish, `zh-CN` for Simplified Chinese, `fr` for French). For a full list, see [Google Translate Language Codes](https://cloud.google.com/translate/docs/languages).
 
-### Development
+## 🛠 Development
 
-Suggestions and contributions are always welcome!
+If you want to build and test the action locally, you can use [act](https://github.com/nektos/act) to run GitHub Actions in your local environment.
 
-### LICENSE
+```bash
+# Install dependencies
+npm install
 
-[MIT](./LICENSE)
+# Run action locally
+act -j translate
+```
+
+## 📝 Notes
+
+- Ensure that you add a valid `github-token` in your workflow for commit authentication.
+- Translation quality depends on Google Translate and may vary based on language.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues, feature requests, or pull requests.
+
+## 🧑‍💻 Author
+
+Created by Vedansh ([offensive-vk](https://github.com/offensive-vk)).
+
+## 📜 License
+
+This project is licensed under the MIT License.
