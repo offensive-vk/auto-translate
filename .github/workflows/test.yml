@@ -22,6 +22,6 @@ jobs:
         with:
           file: './README.md'
           language: es
-          committer: github-actions[bot]
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Translated Markdown File - Readme.md"
+          committer: Hamster [bot]
+          github-token: ${{ secrets.BOT_TOKEN }}
+          commit-message: "CI: Translated Markdown File"

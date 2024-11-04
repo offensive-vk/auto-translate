@@ -27,7 +27,7 @@ inputs:
     default: 'es'
 
 runs:
-  using: 'node:22'
+  using: 'node:20'
   main: 'index.js'
 
 branding:
