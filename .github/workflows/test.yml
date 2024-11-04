@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 20.x
       
-      - name: Translate using Action
+      - name: Translate
         uses: ./
         with:
           file: './README.md'

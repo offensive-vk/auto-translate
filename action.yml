@@ -13,7 +13,7 @@ inputs:
   committer:
     description: 'Name of the committer'
     required: false
-    default: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
+    default: 'github-actions[bot]'
   commit-message:
     description: 'Custom commit message'
     required: false
