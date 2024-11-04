@@ -27,9 +27,9 @@ inputs:
     default: 'es'
 
 runs:
-  using: 'node20'
-  main: 'index.js'
-
+  using: 'docker'
+  image: 'Dockerfile'
+  
 branding:
   icon: book-open
   color: black

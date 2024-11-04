@@ -21,7 +21,7 @@ jobs:
         uses: ./
         with:
           file: './README.md'
-          language: es
-          committer: Hamster [bot]
+          language: "es"
+          committer: "Hamster [bot]"
           github-token: ${{ secrets.BOT_TOKEN }}
           commit-message: "CI: Translated Markdown File"

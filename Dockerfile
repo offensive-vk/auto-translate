@@ -11,7 +11,7 @@ RUN npm i -g pnpm@9.0.0
 COPY package*.json ./
 
 # Install the required dependencies
-RUN pnpm install
+RUN pnpm i
 
 # Copy the rest files
 COPY . .
