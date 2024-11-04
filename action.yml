@@ -17,7 +17,7 @@ inputs:
   commit-message:
     description: 'Custom commit message'
     required: false
-    default: 'Translated and Added README'
+    default: 'Automated Translation Successful ⚡'
   commit-options:
     description: 'Additional commit options (optional)'
     required: false
@@ -26,10 +26,9 @@ inputs:
     required: false
     default: 'es'
 
-
 runs:
-  using: 'docker'
-  image: 'node:20'
+  using: 'node22'
+  main: 'index.js'
 
 branding:
   icon: book-open
