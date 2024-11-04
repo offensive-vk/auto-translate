@@ -1,10 +1,10 @@
 {
   "name": "auto-translate",
   "version": "5.0.0",
-  "description": "A Automated Github Action to translate Readme to a different language",
+  "description": "Github Action to translate Readme to a different language.",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild index.js --bundle --outdir=dist/ --platform=node"
+    "build": "esbuild index.js --bundle --outdir=dist/ --platform=node --sourcemap"
   },
   "keywords": [
     "readme",
