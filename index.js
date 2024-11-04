@@ -1,7 +1,8 @@
 const { readFileSync, writeFileSync, readdirSync } = require("fs");
 const { join } = require("path");
 const core = require("@actions/core");
-const githubToken = core.getInput("github-token");
+const github = require("@actions/github"); // Import the github object
+const githubToken = core.getInput("github-token", { required: true });
 const committer = core.getInput("committer") || "github-actions[bot]";
 const commitMessage = core.getInput("commit-message") || `Translated and Added README`;
 const commitOptions = core.getInput("commit-options") || "";
@@ -15,19 +16,16 @@ const parse = require("remark-parse");
 const stringify = require("remark-stringify");
 const visit = require("unist-util-visit");
 
-// Convert markdown to Abstract Syntax Tree (AST) and vice versa
 const toAst = (markdown) => unified().use(parse).parse(markdown);
 const toMarkdown = (ast) => unified().use(stringify).stringify(ast);
 
-// Identify README file
 const mainDir = ".";
-let README = readdirSync(mainDir).includes(filePath || "readme.md") ? "readme.md" : "README.md";
+let README = readdirSync(mainDir).includes(filePath) ? filePath : "README.md";
 const readme = readFileSync(join(mainDir, README), { encoding: "utf8" });
 const readmeAST = toAst(readme);
 
 console.log("File Found and Started Processing...");
 
-// Translate individual nodes asynchronously
 async function translateNode(node) {
   if (node.type === "text") {
     const translated = await $(node.value, { to: lang });
@@ -35,11 +33,15 @@ async function translateNode(node) {
   }
 }
 
-// Main translation function
 async function translateReadme() {
   try {
-    visit(readmeAST, async (node) => await translateNode(node));
-    await writeFileSync(
+    const nodes = [];
+    visit(readmeAST, (node) => {
+      nodes.push(translateNode(node));
+    });
+    await Promise.all(nodes);
+
+    writeFileSync(
       join(mainDir, `README.${lang}.md`),
       toMarkdown(readmeAST),
       "utf8"
@@ -53,7 +55,6 @@ async function translateReadme() {
   }
 }
 
-// Commit translated file using provided options and committer details
 async function commitChanges() {
   try {
     console.log("*** Commit and Push ***");
@@ -62,10 +63,14 @@ async function commitChanges() {
     await git.add(".");
     await git.commit(`${commitMessage} (${commitOptions})`);
     console.log("*** Committed Successfully ***");
-    await git.push(`https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git`);
+    
+    // Access the full repository name
+    const fullRepoName = `${github.context.repo.owner}/${github.context.repo.repo}`;
+    
+    await git.push(`https://${encodeURIComponent(githubToken)}@github.com/${fullRepoName}.git`);
     console.log("*** Pushed to Remote Repository ***");
   } catch (error) {
-    console.error("Git commit/push failed:", error.message);
+    console.error("*** Git Push Failed *** ", error.message);
     throw error;
   }
 }
