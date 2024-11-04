@@ -4,6 +4,9 @@ on:
   push:
     branches: ['master']
 
+env:
+  github-token: ${{ secrets.BOT_TOKEN }}
+
 jobs:
   test:
     name: Test
@@ -20,8 +23,8 @@ jobs:
       - name: Translate
         uses: ./
         with:
-          file: './README.md'
+          github-token: "${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}"
+          file: "README.md"
           language: "es"
           committer: "Hamster [bot]"
-          github-token: ${{ secrets.BOT_TOKEN }}
-          commit-message: "CI: Translated Markdown File"
+          commit-message: "CI: Translated Markdown File."
