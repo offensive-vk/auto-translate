@@ -1,8 +1,11 @@
 # Use the official Node.js image as the base image
-FROM node:20-alpine
+FROM node:20
 
 # Set the working directory inside the container
 WORKDIR /app
+
+# Install git
+RUN apt-get update && apt-get install -y git
 
 # Setup Node and pnpm
 RUN npm i -g pnpm@9.0.0

@@ -1,7 +1,7 @@
 const { readFileSync, writeFileSync, readdirSync } = require("fs");
 const { join } = require("path");
 const core = require("@actions/core");
-const github = require("@actions/github"); // Import the github object
+const github = require("@actions/github");
 const githubToken = core.getInput("github-token", { required: true });
 const committer = core.getInput("committer") || "github-actions[bot]";
 const commitMessage = core.getInput("commit-message") || `Translated and Added README`;
