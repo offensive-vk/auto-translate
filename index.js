@@ -63,15 +63,12 @@ async function commitChanges() {
     await git.add(".");
     await git.commit(`${commitMessage} (${commitOptions})`);
     console.log("*** Committed Successfully ***");
-    
-    // Access the full repository name
-    const fullRepoName = `${github.context.repo.owner}/${github.context.repo.repo}`;
-    
+    const fullRepoName = `${github.context.repo.owner}/${github.context.repo.repo}`;    
     await git.push(`https://${encodeURIComponent(githubToken)}@github.com/${fullRepoName}.git`);
     console.log("*** Pushed to Remote Repository ***");
   } catch (error) {
-    console.error("*** Git Push Failed *** ", error.message);
-    throw error;
+    console.error("*** Git Push Failed ***", error.message);
+    console.log(error);
   }
 }
 
