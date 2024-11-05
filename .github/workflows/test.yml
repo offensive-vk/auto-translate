@@ -24,3 +24,12 @@ jobs:
           language: "es"
           committer: "TheHamsterBot"
           commit-message: "CI: Translated Markdown File."
+          
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@master
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown File.'

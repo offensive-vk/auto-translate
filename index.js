@@ -10,7 +10,8 @@ const filePath = core.getInput("file") || "README.md";
 const lang = core.getInput("language") || "es";
 const $ = require("@iamtraction/google-translate");
 const simpleGit = require("simple-git");
-const git = simpleGit().init();
+simpleGit().clean(simpleGit.CleanOptions.FORCE);
+const git = simpleGit();
 const unified = require("unified");
 const parse = require("remark-parse");
 const stringify = require("remark-stringify");
@@ -48,11 +49,6 @@ async function translateReadme() {
       "utf8"
     );
     core.setCommandEcho(true);
-    readFile(`README.${lang}.md`, 'utf-8', (err, data) => {
-      if(err) throw err;
-      console.log(data);
-    });
-
     console.log(`README.${lang}.md Translated.`);
     await commitChanges();
     console.log("*** Script Terminated Successfully ***");
@@ -65,7 +61,7 @@ async function translateReadme() {
 async function commitChanges() {
   try {
     console.log("*** Commit and Push ***");
-    await git.init(bare);
+    await git.init();
     await git.addConfig("user.name", committer, append = true, scope = 'global');
     await git.addConfig("user.email", `${committer}@users.noreply.github.com`, append = true, scope = 'global');
     await git.add(".");
