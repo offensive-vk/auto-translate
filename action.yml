@@ -12,7 +12,7 @@ inputs:
     default: 'README.md'
   github-token:
     description: 'GitHub Token Bearer for Authentication'
-    required: true
+    required: false
   committer:
     description: 'Name of the committer'
     required: false
