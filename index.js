@@ -58,6 +58,7 @@ async function translateReadme() {
 async function commitChanges() {
   try {
     console.log("*** Commit and Push ***");
+    await git.init();
     await git.addConfig("user.name", committer);
     await git.addConfig("user.email", `${committer}@users.noreply.github.com`);
     await git.add(".");
