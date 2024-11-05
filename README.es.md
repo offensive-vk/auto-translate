@@ -1,16 +1,14 @@
 # Traducción automática 📘
 
-[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
-
 Traduzca automáticamente un archivo Markdown (por ejemplo, README.md) a otros idiomas y envíe la versión traducida a su repositorio.
+
+## Traducción actual
+
+[No](./README.hi.md)-[Francés](./README.fr.md)-[árabe](./README.ar.md)-[Chino](./README.zh-CN.md)-[Espanol](./README.es.md)-
 
 ## 📖 Descripción general
 
 **Traducción automática**es una acción de GitHub que utiliza Google Translate para crear copias traducidas de archivos Markdown en su repositorio. Esto es especialmente útil para repositorios con una audiencia global, ya que hace que la documentación sea accesible en varios idiomas.
-
-## Idiomas
-
-Para obtener información sobre los códigos de idioma ISO, navegue hasta el sitio web oficial de Google.<https://cloud.google.com/translate/docs/languages>.
 
 ## ✨ Características
 
@@ -20,14 +18,12 @@ Para obtener información sobre los códigos de idioma ISO, navegue hasta el sit
 
 ## 🚀 Uso
 
-### Ejemplo básico
-
 Para una prueba de fuego real, haga clic[aquí](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml)para ver un ejemplo perfecto de esta Acción.
 
 Añade lo siguiente a tu`.github/workflows/translate.yml`archivo de flujo de trabajo para configurar**Traducción automática**en tu repositorio:
 
 ```yaml
-name: Translate README
+name: Translate Action
 on:
   push:
     branches:
@@ -40,47 +36,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto Translate README
+      - name: Auto Translate
         uses: offensive-vk/auto-translate-action@master
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown Files.'
 ```
 
-Este ejemplo traduce el`README.md`archivo al español (`es`) y confirma el archivo traducido`README.es.md`volver al repositorio.
+Este ejemplo traduce el`README.md`archivo al español (`es`) y el archivo traducido`README.es.md`al repositorio.
 
 ### Entradas
 
 | Nombre de entrada | Descripción                                                                                                          | Requerido | Por defecto                                                          |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------- |
 | `file`            | Ruta del archivo a traducir (relativa a la raíz del repositorio).                                                    | No        | `README.md`                                                          |
-| `repo-token`      | Token de GitHub utilizado para autenticar confirmaciones. Usar`${{ secrets.GITHUB_TOKEN }}`en los flujos de trabajo. | Sí        |                                                                      |
+| `repo-token`      | Token de GitHub utilizado para autenticar confirmaciones. Usar`${{ secrets.GITHUB_TOKEN }}`en los flujos de trabajo. | No        |                                                                      |
 | `committer`       | El nombre del confirmador de la confirmación.                                                                        | No        | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
-| `commit-message`  | El mensaje de confirmación para la confirmación de traducción.                                                       | No        | `Translated and Added README`                                        |
 | `commit-options`  | Opciones adicionales para el`git commit`dominio.                                                                     | No        |                                                                      |
 | `language`        | El código del idioma de destino para la traducción (p. ej.,`es`,`zh-CN`,`fr`).                                       | No        | `es`                                                                 |
 
-### Flujo de trabajo de ejemplo con mensaje de confirmación personalizado
+### Flujo de trabajo de ejemplo
 
 ```yaml
-name: Translate README
+name: Translate Multilingual Readme
 on:
   workflow_dispatch:
 
 jobs:
   translate:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Auto Translate README to French
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
-          language: 'fr'
+          language: ${{ matrix.lang }}
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'Translated Markdown ${{ matrix.lang }} File.'
 ```
 
 ## ⚙️ Idiomas admitidos
@@ -93,7 +107,7 @@ Si desea compilar y probar la acción localmente, puede usar[acto](https://githu
 
 ```bash
 # Install dependencies
-npm install
+pnpm i
 
 # Run action locally
 act -j translate
