@@ -1,10 +1,9 @@
-
-
 # Auto Translate 📘
 
 Automatically translate a Markdown file (e.g., README.md) to other languages and commit the translated version back to your repository.
 
-# Current Translation
+## Current Translation
+
 [Hindi](./README.hi.md) -  [French](./README.fr.md) - [Arabic](./README.ar.md) - [Chinese](./README.zh-CN.md) - [Espanol](./README.es.md) - 
 
 ## 📖 Overview
