@@ -52,7 +52,7 @@ jobs:
           message: 'CI: Translated Markdown Files.'
 ```
 
-This example translates the `README.md` file to Spanish (`es`) and commits the translated file `README.es.md` back to the repository.
+This example translates the `README.md` file to Spanish (`es`) and the translated file `README.es.md` to the repository.
 
 ### Inputs
 
