@@ -31,7 +31,8 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/offensive-vk/auto-translate:latest'
+  # image: 'Dockerfile'
   
 branding:
   icon: book-open

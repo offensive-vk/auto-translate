@@ -1,4 +1,4 @@
-name: CI / Deploy to GHCR
+name: CI / Deploy
 
 on:
   push:
@@ -48,9 +48,10 @@ jobs:
             type=ref,event=pr
             type=edge
             latest
+            ${{ github.ref_name }}
           labels: |
             org.opencontainers.image.title=auto-translate
-            org.opencontainers.image.description=Automatically Translate the Markdowns to Other Languages.
+            org.opencontainers.image.description=Automatically Translate the Markdown to Other Languages.
             org.opencontainers.image.vendor=Vedansh
 
       - name: Verify Tags and Labels

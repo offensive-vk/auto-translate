@@ -1,16 +1,14 @@
 # Auto Translate 📘
 
-[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
-
 Automatically translate a Markdown file (e.g., README.md) to other languages and commit the translated version back to your repository.
+
+## Current Translation
+
+[Hindi](./README.hi.md) - [French](./README.fr.md) - [Arabic](./README.ar.md) - [Chinese](./README.zh-CN.md) - [Espanol](./README.es.md) - 
 
 ## 📖 Overview
 
 **Auto Translate** is a GitHub Action that uses Google Translate to create translated copies of Markdown files in your repository. This is especially useful for repositories with a global audience, making documentation accessible in multiple languages.
-
-## Languages
-
-For Information about the ISO Language Codes, please navigate to google's official website <https://cloud.google.com/translate/docs/languages>.
 
 ## ✨ Features
 
@@ -20,14 +18,12 @@ For Information about the ISO Language Codes, please navigate to google's offici
 
 ## 🚀 Usage
 
-### Basic Example
-
 For an live firetest, please click [here](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml) to see a perfect example of this Action.
 
 Add the following to your `.github/workflows/translate.yml` workflow file to set up **Auto Translate** in your repository:
 
 ```yaml
-name: Translate README
+name: Translate Action
 on:
   push:
     branches:
@@ -40,47 +36,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto Translate README
+      - name: Auto Translate
         uses: offensive-vk/auto-translate-action@master
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown Files.'
 ```
 
-This example translates the `README.md` file to Spanish (`es`) and commits the translated file `README.es.md` back to the repository.
+This example translates the `README.md` file to Spanish (`es`) and the translated file `README.es.md` to the repository.
 
 ### Inputs
 
 | Input Name       | Description                                                                                  | Required | Default                                 |
 |------------------|----------------------------------------------------------------------------------------------|----------|-----------------------------------------|
-| `file`           | Path of the file to translate (relative to repository root).                                 | No       | `README.md`                             |
-| `repo-token`   | GitHub token used to authenticate commits. Use `${{ secrets.GITHUB_TOKEN }}` in workflows.  | Yes      |                                         |
-| `committer`      | The name of the committer for the commit.                                                    | No       | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
-| `commit-message` | The commit message for the translation commit.                                               | No       | `Translated and Added README`           |
-| `commit-options` | Additional options for the `git commit` command.                                             | No       |                                         |
-| `language`       | The target language code for translation (e.g., `es`, `zh-CN`, `fr`).                       | No       | `es`                                    |
+| `file`           | Path of the file to translate (relative to repository root). | No | `README.md` |
+| `repo-token`   | GitHub token used to authenticate commits. Use `${{ secrets.GITHUB_TOKEN }}` in workflows.  | No | |
+| `committer`      | The name of the committer for the commit. | No | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
+| `commit-options` | Additional options for the `git commit` command. | No | |
+| `language`       | The target language code for translation (e.g., `es`, `zh-CN`, `fr`). | No | `es` |
 
-### Example Workflow with Custom Commit Message
+### Example Workflow
 
 ```yaml
-name: Translate README
+name: Translate Multilingual Readme
 on:
   workflow_dispatch:
 
 jobs:
   translate:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Auto Translate README to French
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
-          language: 'fr'
+          language: ${{ matrix.lang }}
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'Translated Markdown ${{ matrix.lang }} File.'
 ```
 
 ## ⚙️ Supported Languages
@@ -93,7 +107,7 @@ If you want to build and test the action locally, you can use [act](https://gith
 
 ```bash
 # Install dependencies
-npm install
+pnpm i
 
 # Run action locally
 act -j translate

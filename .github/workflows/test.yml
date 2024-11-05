@@ -26,8 +26,6 @@ jobs:
           repo-token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
           file: "README.md"
           language: ${{ matrix.lang }}
-          committer: "TheHamsterBot"
-          commit-message: "CI: Translated Markdown File."
 
       - name: Commit and Push
         uses: offensive-vk/auto-commit-push@master
@@ -36,4 +34,4 @@ jobs:
           name: 'TheHamsterBot'
           email: 'TheHamsterBot@outlook.com'
           github-token: ${{ secrets.BOT_TOKEN }}
-          message: 'CI: Translated Markdown Files.'
+          message: 'CI: Translated Markdown ${{ matrix.lang }} File.'
