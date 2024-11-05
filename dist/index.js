@@ -41676,7 +41676,8 @@ var filePath = core.getInput("file") || "README.md";
 var lang = core.getInput("language") || "es";
 var $ = require_src();
 var simpleGit = require_cjs();
-var git = simpleGit().init();
+simpleGit().clean(simpleGit.CleanOptions.FORCE);
+var git = simpleGit();
 var unified = require_unified();
 var parse = require_remark_parse();
 var stringify = require_remark_stringify();
@@ -41708,10 +41709,6 @@ async function translateReadme() {
       "utf8"
     );
     core.setCommandEcho(true);
-    readFile(`README.${lang}.md`, "utf-8", (err, data) => {
-      if (err) throw err;
-      console.log(data);
-    });
     console.log(`README.${lang}.md Translated.`);
     await commitChanges();
     console.log("*** Script Terminated Successfully ***");
@@ -41723,8 +41720,9 @@ async function translateReadme() {
 async function commitChanges() {
   try {
     console.log("*** Commit and Push ***");
+    await git.init();
     await git.addConfig("user.name", committer, append = true, scope = "global");
-    await git.addConfig("user.email", `${committer}@users.noreply.github.com`, append = true, scope = "local");
+    await git.addConfig("user.email", `${committer}@users.noreply.github.com`, append = true, scope = "global");
     await git.add(".");
     await git.commit(`${commitMessage} (${commitOptions})`);
     console.log("*** Committed Successfully ***");

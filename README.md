@@ -8,6 +8,10 @@ Automatically translate a Markdown file (e.g., README.md) to other languages and
 
 **Auto Translate** is a GitHub Action that uses Google Translate to create translated copies of Markdown files in your repository. This is especially useful for repositories with a global audience, making documentation accessible in multiple languages.
 
+## Languages
+
+For Information about the ISO Language Codes, please navigate to google's official website <https://cloud.google.com/translate/docs/languages>.
+
 ## ✨ Features
 
 - Translates Markdown files to any specified language.
@@ -17,6 +21,8 @@ Automatically translate a Markdown file (e.g., README.md) to other languages and
 ## 🚀 Usage
 
 ### Basic Example
+
+For an live firetest, please click [here](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml) to see a perfect example of this Action.
 
 Add the following to your `.github/workflows/translate.yml` workflow file to set up **Auto Translate** in your repository:
 
@@ -37,7 +43,7 @@ jobs:
       - name: Auto Translate README
         uses: offensive-vk/auto-translate-action@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
 ```
@@ -49,7 +55,7 @@ This example translates the `README.md` file to Spanish (`es`) and commits the t
 | Input Name       | Description                                                                                  | Required | Default                                 |
 |------------------|----------------------------------------------------------------------------------------------|----------|-----------------------------------------|
 | `file`           | Path of the file to translate (relative to repository root).                                 | No       | `README.md`                             |
-| `github-token`   | GitHub token used to authenticate commits. Use `${{ secrets.GITHUB_TOKEN }}` in workflows.  | Yes      |                                         |
+| `repo-token`   | GitHub token used to authenticate commits. Use `${{ secrets.GITHUB_TOKEN }}` in workflows.  | Yes      |                                         |
 | `committer`      | The name of the committer for the commit.                                                    | No       | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
 | `commit-message` | The commit message for the translation commit.                                               | No       | `Translated and Added README`           |
 | `commit-options` | Additional options for the `git commit` command.                                             | No       |                                         |
@@ -58,7 +64,7 @@ This example translates the `README.md` file to Spanish (`es`) and commits the t
 ### Example Workflow with Custom Commit Message
 
 ```yaml
-name: Translate README with Custom Message
+name: Translate README
 on:
   workflow_dispatch:
 
@@ -75,7 +81,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'fr'
-          commit-message: 'Ajout de la traduction française du README'
 ```
 
 ## ⚙️ Supported Languages

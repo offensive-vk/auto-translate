@@ -1,4 +1,4 @@
-name: CI / Test Action
+name: CI / Action
 
 on:
   workflow_dispatch:
@@ -10,21 +10,25 @@ env:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
+
     name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Translate
+      - name: Translate Readme
         uses: ./
         with:
           repo-token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
           file: "README.md"
-          language: "es"
+          language: ${{ matrix.lang }}
           committer: "TheHamsterBot"
           commit-message: "CI: Translated Markdown File."
-          
+
       - name: Commit and Push
         uses: offensive-vk/auto-commit-push@master
         with: 
@@ -32,4 +36,4 @@ jobs:
           name: 'TheHamsterBot'
           email: 'TheHamsterBot@outlook.com'
           github-token: ${{ secrets.BOT_TOKEN }}
-          message: 'CI: Translated Markdown File.'
+          message: 'CI: Translated Markdown Files.'
