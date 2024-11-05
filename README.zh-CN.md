@@ -1,16 +1,14 @@
 # 自动翻译 📘
 
-[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
-
 自动将 Markdown 文件（例如 README.md）翻译为其他语言，并将翻译后的版本提交回您的存储库。
+
+## 当前翻译
+
+[没有](./README.hi.md)-[法语](./README.fr.md)-[阿拉伯](./README.ar.md)-[中国人](./README.zh-CN.md)-[西班牙语](./README.es.md)-
 
 ## 📖 概述
 
 **自动翻译**是一个 GitHub Action，它使用 Google Translate 在存储库中创建 Markdown 文件的翻译副本。这对于拥有全球受众的存储库特别有用，可以以多种语言访问文档。
-
-## 语言
-
-有关 ISO 语言代码的信息，请导航至 google 官方网站<https://cloud.google.com/translate/docs/languages>.
 
 ## ✨ 特点
 
@@ -20,14 +18,12 @@
 
 ## 🚀 用法
 
-### 基本示例
-
 如需实弹测试，请点击[这里](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml)查看此操作的完美示例。
 
 将以下内容添加到您的`.github/workflows/translate.yml`要设置的工作流程文件**自动翻译**在你的存储库中：
 
 ```yaml
-name: Translate README
+name: Translate Action
 on:
   push:
     branches:
@@ -40,47 +36,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto Translate README
+      - name: Auto Translate
         uses: offensive-vk/auto-translate-action@master
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown Files.'
 ```
 
-这个例子翻译的是`README.md`文件为西班牙语 (`es`) 并提交翻译后的文件`README.es.md`返回到存储库。
+这个例子翻译的是`README.md`文件为西班牙语 (`es`) 和翻译后的文件`README.es.md`到存储库。
 
 ### 输入
 
 | 输入名称             | 描述                                                     | 必需的 | 默认                                                                   |
 | ---------------- | ------------------------------------------------------ | --- | -------------------------------------------------------------------- |
 | `file`           | 要翻译的文件的路径（相对于存储库根）。                                    | 不   | `README.md`                                                          |
-| `repo-token`     | GitHub 令牌用于验证提交。使用`${{ secrets.GITHUB_TOKEN }}`在工作流程中。 | 是的  |                                                                      |
+| `repo-token`     | GitHub 令牌用于验证提交。使用`${{ secrets.GITHUB_TOKEN }}`在工作流程中。 | 不   |                                                                      |
 | `committer`      | 提交的提交者的名称。                                             | 不   | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
-| `commit-message` | 翻译提交的提交消息。                                             | 不   | `Translated and Added README`                                        |
 | `commit-options` | 附加选项`git commit`命令。                                    | 不   |                                                                      |
 | `language`       | 翻译的目标语言代码（例如，`es`,`zh-CN`,`fr`).                       | 不   | `es`                                                                 |
 
-### 具有自定义提交消息的示例工作流程
+### 示例工作流程
 
 ```yaml
-name: Translate README
+name: Translate Multilingual Readme
 on:
   workflow_dispatch:
 
 jobs:
   translate:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Auto Translate README to French
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
-          language: 'fr'
+          language: ${{ matrix.lang }}
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'Translated Markdown ${{ matrix.lang }} File.'
 ```
 
 ## ⚙️ 支持的语言
@@ -93,7 +107,7 @@ jobs:
 
 ```bash
 # Install dependencies
-npm install
+pnpm i
 
 # Run action locally
 act -j translate
