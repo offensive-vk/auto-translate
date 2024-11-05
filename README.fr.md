@@ -1,16 +1,14 @@
 # Traduction automatique 📘
 
-[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
-
 Traduisez automatiquement un fichier Markdown (par exemple, README.md) dans d'autres langues et renvoyez la version traduite à votre référentiel.
+
+## Traduction actuelle
+
+[Non](./README.hi.md)-[Français](./README.fr.md)-[arabe](./README.ar.md)-[Chinois](./README.zh-CN.md)-[espagnol](./README.es.md)-
 
 ## 📖 Aperçu
 
 **Traduction automatique**est une action GitHub qui utilise Google Translate pour créer des copies traduites des fichiers Markdown dans votre référentiel. Ceci est particulièrement utile pour les référentiels ayant une audience mondiale, rendant la documentation accessible dans plusieurs langues.
-
-## Langues
-
-Pour plus d'informations sur les codes de langue ISO, veuillez accéder au site officiel de Google.<https://cloud.google.com/translate/docs/languages>.
 
 ## ✨ Caractéristiques
 
@@ -20,14 +18,12 @@ Pour plus d'informations sur les codes de langue ISO, veuillez accéder au site 
 
 ## 🚀 Usage
 
-### Exemple de base
-
 Pour un test d'incendie en direct, veuillez cliquer[ici](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml)pour voir un exemple parfait de cette action.
 
 Ajoutez ce qui suit à votre`.github/workflows/translate.yml`fichier de workflow à configurer**Traduction automatique**dans votre dépôt :
 
 ```yaml
-name: Translate README
+name: Translate Action
 on:
   push:
     branches:
@@ -40,47 +36,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto Translate README
+      - name: Auto Translate
         uses: offensive-vk/auto-translate-action@master
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown Files.'
 ```
 
-Cet exemple traduit le`README.md`fichier en espagnol (`es`) et valide le fichier traduit`README.es.md`retour au référentiel.
+Cet exemple traduit le`README.md`fichier en espagnol (`es`) et le fichier traduit`README.es.md`au référentiel.
 
 ### Entrées
 
 | Nom d'entrée     | Description                                                                                                        | Requis | Défaut                                                               |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------ | ------ | -------------------------------------------------------------------- |
 | `file`           | Chemin du fichier à traduire (par rapport à la racine du référentiel).                                             | Non    | `README.md`                                                          |
-| `repo-token`     | Jeton GitHub utilisé pour authentifier les commits. Utiliser`${{ secrets.GITHUB_TOKEN }}`dans les flux de travail. | Oui    |                                                                      |
+| `repo-token`     | Jeton GitHub utilisé pour authentifier les commits. Utiliser`${{ secrets.GITHUB_TOKEN }}`dans les flux de travail. | Non    |                                                                      |
 | `committer`      | Le nom du committer pour la validation.                                                                            | Non    | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
-| `commit-message` | Le message de validation pour la validation de traduction.                                                         | Non    | `Translated and Added README`                                        |
 | `commit-options` | Options supplémentaires pour le`git commit`commande.                                                               | Non    |                                                                      |
 | `language`       | Le code de la langue cible pour la traduction (par exemple,`es`,`zh-CN`,`fr`).                                     | Non    | `es`                                                                 |
 
-### Exemple de flux de travail avec un message de validation personnalisé
+### Exemple de flux de travail
 
 ```yaml
-name: Translate README
+name: Translate Multilingual Readme
 on:
   workflow_dispatch:
 
 jobs:
   translate:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Auto Translate README to French
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
-          language: 'fr'
+          language: ${{ matrix.lang }}
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'Translated Markdown ${{ matrix.lang }} File.'
 ```
 
 ## ⚙️ Langues prises en charge
@@ -93,7 +107,7 @@ Si vous souhaitez créer et tester l'action localement, vous pouvez utiliser[act
 
 ```bash
 # Install dependencies
-npm install
+pnpm i
 
 # Run action locally
 act -j translate
@@ -101,7 +115,7 @@ act -j translate
 
 ## 📝 Remarques
 
--   Assurez-vous d'ajouter un`github-token`dans votre flux de travail pour l'authentification de validation.
+-   Assurez-vous d'ajouter un nom valide`github-token`dans votre flux de travail pour l'authentification de validation.
 -   La qualité de la traduction dépend de Google Translate et peut varier en fonction de la langue.
 
 ## 🤝 Contribuer
