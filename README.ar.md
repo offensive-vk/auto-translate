@@ -1,16 +1,14 @@
 # ترجمة تلقائية 📘
 
-[![GitHub Action Badge](https://img.shields.io/badge/Action-Auto%20Translate-blue?style=flat-square)](https://github.com/offensive-vk/auto-translate)
-
 قم بترجمة ملف Markdown تلقائيًا (على سبيل المثال، README.md) إلى لغات أخرى وأرسل النسخة المترجمة مرة أخرى إلى مستودعك.
+
+## الترجمة الحالية
+
+[لا](./README.hi.md)-[فرنسي](./README.fr.md)-[عربي](./README.ar.md)-[الصينية](./README.zh-CN.md)-[اسبانيول](./README.es.md)-
 
 ## 📖 نظرة عامة
 
 **ترجمة تلقائية**هو إجراء GitHub يستخدم ترجمة Google لإنشاء نسخ مترجمة من ملفات Markdown في مستودعك. وهذا مفيد بشكل خاص للمستودعات ذات الجمهور العالمي، مما يجعل الوثائق متاحة بلغات متعددة.
-
-## اللغات
-
-للحصول على معلومات حول رموز لغة ISO، يرجى الانتقال إلى موقع Google الرسمي<https://cloud.google.com/translate/docs/languages>.
 
 ## ✨ المميزات
 
@@ -20,14 +18,12 @@
 
 ## 🚀 الاستخدام
 
-### مثال أساسي
-
 لإجراء اختبار إطلاق النار المباشر، من فضلك انقر[هنا](https://github.com/offensive-vk/auto-translate/tree/master/.github/workflows/test.yml)لنرى مثالا مثاليا لهذا الإجراء.
 
-أضف ما يلي إلى الخاص بك`.github/workflows/translate.yml`ملف سير العمل للإعداد**ترجمة تلقائية**في مستودعك:
+أضف ما يلي إلى الخاص بك`.github/workflows/translate.yml`ملف سير العمل لإعداد**ترجمة تلقائية**في مستودعك:
 
 ```yaml
-name: Translate README
+name: Translate Action
 on:
   push:
     branches:
@@ -40,47 +36,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto Translate README
+      - name: Auto Translate
         uses: offensive-vk/auto-translate-action@master
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
           language: 'es'
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'CI: Translated Markdown Files.'
 ```
 
-هذا المثال يترجم`README.md`ملف إلى الإسبانية (`es`) ويرتكب الملف المترجم`README.es.md`العودة إلى المستودع.
+هذا المثال يترجم`README.md`ملف إلى الإسبانية (`es`) والملف المترجم`README.es.md`إلى المستودع.
 
 ### المدخلات
 
 | اسم الإدخال      | وصف                                                                                    | مطلوب | تقصير                                                                |
 | ---------------- | -------------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------------- |
 | `file`           | مسار الملف المراد ترجمته (بالنسبة إلى جذر المستودع).                                   | لا    | `README.md`                                                          |
-| `repo-token`     | يستخدم رمز GitHub لمصادقة الالتزامات. يستخدم`${{ secrets.GITHUB_TOKEN }}`في سير العمل. | نعم   |                                                                      |
+| `repo-token`     | يستخدم رمز GitHub لمصادقة الالتزامات. يستخدم`${{ secrets.GITHUB_TOKEN }}`في سير العمل. | لا    |                                                                      |
 | `committer`      | اسم الملتزم بالالتزام.                                                                 | لا    | `github-actions[bot] <github-actions[bot]@users.noreply.github.com>` |
-| `commit-message` | رسالة الالتزام لالتزام الترجمة.                                                        | لا    | `Translated and Added README`                                        |
 | `commit-options` | خيارات إضافية لل`git commit`يأمر.                                                      | لا    |                                                                      |
 | `language`       | رمز اللغة الهدف للترجمة (على سبيل المثال،`es`,`zh-CN`,`fr`).                           | لا    | `es`                                                                 |
 
-### مثال لسير العمل مع رسالة الالتزام المخصصة
+### مثال لسير العمل
 
 ```yaml
-name: Translate README
+name: Translate Multilingual Readme
 on:
   workflow_dispatch:
 
 jobs:
   translate:
+    strategy:
+      matrix:
+        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Auto Translate README to French
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
-          language: 'fr'
+          language: ${{ matrix.lang }}
+
+      - name: Commit and Push
+        uses: offensive-vk/auto-commit-push@v7
+        with: 
+          branch: 'master'
+          name: 'TheHamsterBot'
+          email: 'TheHamsterBot@outlook.com'
+          github-token: ${{ secrets.BOT_TOKEN }}
+          message: 'Translated Markdown ${{ matrix.lang }} File.'
 ```
 
 ## ⚙️ اللغات المدعومة
@@ -89,11 +103,11 @@ jobs:
 
 ## 🛠 التطوير
 
-إذا كنت ترغب في إنشاء الإجراء واختباره محليًا، فيمكنك استخدامه[يمثل](https://github.com/nektos/act)لتشغيل إجراءات GitHub في بيئتك المحلية.
+إذا كنت تريد إنشاء الإجراء واختباره محليًا، فيمكنك استخدامه[يمثل](https://github.com/nektos/act)لتشغيل إجراءات GitHub في بيئتك المحلية.
 
 ```bash
 # Install dependencies
-npm install
+pnpm i
 
 # Run action locally
 act -j translate
@@ -110,7 +124,7 @@ act -j translate
 
 ## 🧑‍💻 المؤلف
 
-تم إنشاؤها بواسطة فيدانش ([هجوم-vk](https://github.com/offensive-vk)).
+تم إنشاؤها بواسطة فيدانش ([هجوم vk](https://github.com/offensive-vk)).
 
 ## 📜 الترخيص
 
