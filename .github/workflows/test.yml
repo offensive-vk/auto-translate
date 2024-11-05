@@ -6,7 +6,6 @@ on:
     branches: ['master']
 
 env:
-  github-token: ${{ secrets.BOT_TOKEN }}
   repo-token: ${{ secrets.BOT_TOKEN }}
 
 jobs:
@@ -23,5 +22,5 @@ jobs:
           repo-token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
           file: "README.md"
           language: "es"
-          committer: "Hamster [bot]"
+          committer: "TheHamsterBot"
           commit-message: "CI: Translated Markdown File."
