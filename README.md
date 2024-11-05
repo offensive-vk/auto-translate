@@ -4,7 +4,7 @@ Automatically translate a Markdown file (e.g., README.md) to other languages and
 
 ## Current Translation
 
-[Hindi](./README.hi.md) -  [French](./README.fr.md) - [Arabic](./README.ar.md) - [Chinese](./README.zh-CN.md) - [Espanol](./README.es.md) - 
+[Hindi](./README.hi.md) - [French](./README.fr.md) - [Arabic](./README.ar.md) - [Chinese](./README.zh-CN.md) - [Espanol](./README.es.md) - 
 
 ## 📖 Overview
 

@@ -77,3 +77,4 @@ async function commitChanges() {
 
 // Translate 
 translateReadme();
+/** MIT License by Vedansh (offensive-vk) */

@@ -1,4 +1,4 @@
-name: Auto Translate MD
+name: Auto Translate
 author: Vedansh (offensive-vk)
 description: Automatically Translate a MD File to Other Languages
 
@@ -31,7 +31,8 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/offensive-vk/auto-translate:latest'
+  # image: 'Dockerfile'
   
 branding:
   icon: book-open
