@@ -3,7 +3,7 @@ name: CI / Action
 on:
   workflow_dispatch:
   push:
-    branches: ['master']
+    branches: ['use']
 
 env:
   repo-token: ${{ secrets.BOT_TOKEN }}
@@ -12,7 +12,7 @@ jobs:
   test:
     strategy:
       matrix:
-        lang: ['es', 'hi', 'fr', 'zh-CN', 'ar']
+        lang: ['es', 'ru', 'fr', 'zh-CN', 'ar', 'de', 'hi']
 
     name: Test
     runs-on: ubuntu-latest
@@ -30,8 +30,11 @@ jobs:
       - name: Commit and Push
         uses: offensive-vk/auto-commit-push@master
         with: 
-          branch: 'master'
+          branch: 'use'
           name: 'TheHamsterBot'
           email: 'TheHamsterBot@outlook.com'
           github-token: ${{ secrets.BOT_TOKEN }}
           message: 'CI: Translated Markdown ${{ matrix.lang }} File.'
+        
+      - name: Wait
+        run: echo "Please wait..... " && sleep 5
