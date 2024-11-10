@@ -26,7 +26,7 @@ let README = readdirSync(mainDir).includes(filePath) ? filePath : "README.md";
 const readme = readFileSync(join(mainDir, README), { encoding: "utf8" });
 const readmeAST = toAst(readme);
 
-console.log("File Found and Started Processing...");
+console.log("*** Started Processing ***");
 
 async function translateNode(node) {
   if (node.type === "text") {
@@ -77,4 +77,13 @@ async function commitChanges() {
 
 // Translate 
 translateReadme();
-/** MIT License by Vedansh (offensive-vk) */
+/******************************************************/
+/**
+ * @author Vedansh (offensive-vk)
+ * @url https://github.com/offensive-vk/auto-translate/
+ * @type Github Action for Translating the README.
+ * @lang JavaScript + Node.js
+ * @uses Octokit and Actions Core
+ * @runs Nodejs v20.x
+ */
+/******************************************************/
