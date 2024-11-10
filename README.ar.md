@@ -1,10 +1,10 @@
 # ترجمة تلقائية 📘
 
-قم بترجمة ملف Markdown تلقائيًا (على سبيل المثال، README.md) إلى لغات أخرى وأرسل النسخة المترجمة مرة أخرى إلى مستودعك.
+يقوم هذا الإجراء تلقائيًا بترجمة ملف Markdown (على سبيل المثال، README.md) إلى أي لغة أخرى باستخدام الخيارات. ومع ذلك، لا يعالج هذا الإجراء علامات html والتنسيقات المعقدة الأخرى في ملف تخفيض السعر.
 
 ## الترجمة الحالية
 
-[لا](./README.hi.md)-[فرنسي](./README.fr.md)-[عربي](./README.ar.md)-[الصينية](./README.zh-CN.md)-[اسبانيول](./README.es.md)-
+[إنجليزي](./README.md)-[لا](./README.hi.md)-[فرنسي](./README.fr.md)-[عربي](./README.ar.md)-[الصينية](./README.zh-CN.md)-[اسبانيول](./README.es.md)
 
 ## 📖 نظرة عامة
 
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Auto Translate
-        uses: offensive-vk/auto-translate-action@master
+        uses: offensive-vk/auto-translate@v7
         with:
           file: 'README.md'
           language: 'es'
@@ -49,7 +49,7 @@ jobs:
           name: 'TheHamsterBot'
           email: 'TheHamsterBot@outlook.com'
           github-token: ${{ secrets.BOT_TOKEN }}
-          message: 'CI: Translated Markdown Files.'
+          message: 'CI: Translated Markdown File.'
 ```
 
 هذا المثال يترجم`README.md`ملف إلى الإسبانية (`es`) والملف المترجم`README.es.md`إلى المستودع.
@@ -128,4 +128,13 @@ act -j translate
 
 ## 📜 الترخيص
 
-هذا المشروع مرخص بموجب ترخيص MIT.
+هذا المشروع مرخص بموجب[مع](LICENSE)رخصة.
+
+* * *
+
+<p align="center">
+  <i>&copy; <a href="https://github.com/offensive-vk/">Vedansh </a> 2020 - Present</i><br>
+  <i>Licensed under <a href="https://github.com/offensive-vk/auto-translate?tab=MIT-1-ov-file">MIT</a></i><br>
+  <a href="https://github.com/TheHamsterBot"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" alt="hamster"/></a><br>
+  <sup>Thanks for visiting :)</sup>
+</p>
