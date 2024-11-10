@@ -49,7 +49,6 @@ async function translateReadme() {
     );
     core.setCommandEcho(true);
     console.log(`README.${lang}.md Translated.`);
-    await commitChanges();
   } catch (error) {
     console.error("Error during translation:", error.message);
     process.exit(1);

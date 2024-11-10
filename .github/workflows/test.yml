@@ -1,12 +1,13 @@
 name: CI / Action
 
 on:
+  workflow_call:
+    inputs:
+      lang:
+        type: string
+        description: 'The Language to Translate'
+        default: 'es'
   workflow_dispatch:
-  push:
-    branches: ['master']
-
-env:
-  repo-token: ${{ secrets.BOT_TOKEN }}
 
 jobs:
   test:
@@ -14,7 +15,7 @@ jobs:
       matrix:
         lang: ['es', 'hi', 'fr', 'zh-CN', 'ar', 'de', 'ru']
 
-    name: Test
+    name: Test on ${{ matrix.lang }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,14 +24,13 @@ jobs:
       - name: Translate Readme
         uses: ./
         with:
-          repo-token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
           file: "README.md"
           language: ${{ matrix.lang }}
 
       - name: Commit and Push
         uses: offensive-vk/auto-commit-push@master
         with: 
-          branch: 'master'
+          branch: ${{ github.ref_name }}
           name: 'TheHamsterBot'
           email: 'TheHamsterBot@outlook.com'
           github-token: ${{ secrets.BOT_TOKEN }}
