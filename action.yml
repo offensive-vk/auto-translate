@@ -30,8 +30,10 @@ inputs:
     default: 'es'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'docker'
+  image: 'Dockerfile'
+  # using: 'node20'
+  # main: 'dist/index.js'
   
 branding:
   icon: book-open

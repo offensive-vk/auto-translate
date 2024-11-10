@@ -16,7 +16,6 @@ const unified = require("unified");
 const parse = require("remark-parse");
 const stringify = require("remark-stringify");
 const visit = require("unist-util-visit");
-const { context } = require("esbuild");
 
 const toAst = (markdown) => unified().use(parse).parse(markdown);
 const toMarkdown = (ast) => unified().use(stringify).stringify(ast);

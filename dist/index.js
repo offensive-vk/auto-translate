@@ -4239,18 +4239,18 @@ var require_webidl = __commonJS({
     webidl.errors.exception = function(message) {
       return new TypeError(`${message.header}: ${message.message}`);
     };
-    webidl.errors.conversionFailed = function(context2) {
-      const plural = context2.types.length === 1 ? "" : " one of";
-      const message = `${context2.argument} could not be converted to${plural}: ${context2.types.join(", ")}.`;
+    webidl.errors.conversionFailed = function(context) {
+      const plural = context.types.length === 1 ? "" : " one of";
+      const message = `${context.argument} could not be converted to${plural}: ${context.types.join(", ")}.`;
       return webidl.errors.exception({
-        header: context2.prefix,
+        header: context.prefix,
         message
       });
     };
-    webidl.errors.invalidArgument = function(context2) {
+    webidl.errors.invalidArgument = function(context) {
       return webidl.errors.exception({
-        header: context2.prefix,
-        message: `"${context2.value}" is an invalid ${context2.type}.`
+        header: context.prefix,
+        message: `"${context.value}" is an invalid ${context.type}.`
       });
     };
     webidl.brandCheck = function(V, I, opts = void 0) {
@@ -9561,15 +9561,15 @@ var require_api_request = __commonJS({
         }
         addSignal(this, signal);
       }
-      onConnect(abort, context2) {
+      onConnect(abort, context) {
         if (!this.callback) {
           throw new RequestAbortedError();
         }
         this.abort = abort;
-        this.context = context2;
+        this.context = context;
       }
       onHeaders(statusCode, rawHeaders, resume, statusMessage) {
-        const { callback, opaque, abort, context: context2, responseHeaders, highWaterMark } = this;
+        const { callback, opaque, abort, context, responseHeaders, highWaterMark } = this;
         const headers = responseHeaders === "raw" ? util.parseRawHeaders(rawHeaders) : util.parseHeaders(rawHeaders);
         if (statusCode < 200) {
           if (this.onInfo) {
@@ -9596,7 +9596,7 @@ var require_api_request = __commonJS({
               trailers: this.trailers,
               opaque,
               body,
-              context: context2
+              context
             });
           }
         }
@@ -9716,15 +9716,15 @@ var require_api_stream = __commonJS({
         }
         addSignal(this, signal);
       }
-      onConnect(abort, context2) {
+      onConnect(abort, context) {
         if (!this.callback) {
           throw new RequestAbortedError();
         }
         this.abort = abort;
-        this.context = context2;
+        this.context = context;
       }
       onHeaders(statusCode, rawHeaders, resume, statusMessage) {
-        const { factory, opaque, context: context2, callback, responseHeaders } = this;
+        const { factory, opaque, context, callback, responseHeaders } = this;
         const headers = responseHeaders === "raw" ? util.parseRawHeaders(rawHeaders) : util.parseHeaders(rawHeaders);
         if (statusCode < 200) {
           if (this.onInfo) {
@@ -9752,7 +9752,7 @@ var require_api_stream = __commonJS({
             statusCode,
             headers,
             opaque,
-            context: context2
+            context
           });
           if (!res || typeof res.write !== "function" || typeof res.end !== "function" || typeof res.on !== "function") {
             throw new InvalidReturnValueError("expected Writable");
@@ -9944,17 +9944,17 @@ var require_api_pipeline = __commonJS({
         this.res = null;
         addSignal(this, signal);
       }
-      onConnect(abort, context2) {
+      onConnect(abort, context) {
         const { ret, res } = this;
         assert(!res, "pipeline cannot be retried");
         if (ret.destroyed) {
           throw new RequestAbortedError();
         }
         this.abort = abort;
-        this.context = context2;
+        this.context = context;
       }
       onHeaders(statusCode, rawHeaders, resume) {
-        const { opaque, handler, context: context2 } = this;
+        const { opaque, handler, context } = this;
         if (statusCode < 200) {
           if (this.onInfo) {
             const headers = this.responseHeaders === "raw" ? util.parseRawHeaders(rawHeaders) : util.parseHeaders(rawHeaders);
@@ -9972,7 +9972,7 @@ var require_api_pipeline = __commonJS({
             headers,
             opaque,
             body: this.res,
-            context: context2
+            context
           });
         } catch (err) {
           this.res.on("error", util.nop);
@@ -10056,7 +10056,7 @@ var require_api_upgrade = __commonJS({
         this.context = null;
         addSignal(this, signal);
       }
-      onConnect(abort, context2) {
+      onConnect(abort, context) {
         if (!this.callback) {
           throw new RequestAbortedError();
         }
@@ -10067,7 +10067,7 @@ var require_api_upgrade = __commonJS({
         throw new SocketError("bad upgrade", null);
       }
       onUpgrade(statusCode, rawHeaders, socket) {
-        const { callback, opaque, context: context2 } = this;
+        const { callback, opaque, context } = this;
         assert.strictEqual(statusCode, 101);
         removeSignal(this);
         this.callback = null;
@@ -10076,7 +10076,7 @@ var require_api_upgrade = __commonJS({
           headers,
           socket,
           opaque,
-          context: context2
+          context
         });
       }
       onError(err) {
@@ -10144,18 +10144,18 @@ var require_api_connect = __commonJS({
         this.abort = null;
         addSignal(this, signal);
       }
-      onConnect(abort, context2) {
+      onConnect(abort, context) {
         if (!this.callback) {
           throw new RequestAbortedError();
         }
         this.abort = abort;
-        this.context = context2;
+        this.context = context;
       }
       onHeaders() {
         throw new SocketError("bad connect", null);
       }
       onUpgrade(statusCode, rawHeaders, socket) {
-        const { callback, opaque, context: context2 } = this;
+        const { callback, opaque, context } = this;
         removeSignal(this);
         this.callback = null;
         let headers = rawHeaders;
@@ -10167,7 +10167,7 @@ var require_api_connect = __commonJS({
           headers,
           socket,
           opaque,
-          context: context2
+          context
         });
       }
       onError(err) {
@@ -20259,8 +20259,8 @@ var require_dist_node2 = __commonJS({
     function isKeyOperator(operator) {
       return operator === ";" || operator === "&" || operator === "?";
     }
-    function getValues(context2, operator, key, modifier) {
-      var value = context2[key], result = [];
+    function getValues(context, operator, key, modifier) {
+      var value = context[key], result = [];
       if (isDefined(value) && value !== "") {
         if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
           value = value.toString();
@@ -20324,7 +20324,7 @@ var require_dist_node2 = __commonJS({
         expand: expand.bind(null, template)
       };
     }
-    function expand(template, context2) {
+    function expand(template, context) {
       var operators = ["+", "#", ".", "/", ";", "?", "&"];
       template = template.replace(
         /\{([^\{\}]+)\}|([^\{\}]+)/g,
@@ -20338,7 +20338,7 @@ var require_dist_node2 = __commonJS({
             }
             expression.split(/,/g).forEach(function(variable) {
               var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-              values.push(getValues(context2, operator, tmp[1], tmp[2] || tmp[3]));
+              values.push(getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
             });
             if (operator && operator !== "+") {
               var separator = ",";
@@ -26065,19 +26065,19 @@ var require_cjs = __commonJS({
       }
       const onSpawnAfter = {
         type: "spawn.after",
-        action(_data, context2) {
+        action(_data, context) {
           function kill() {
-            context2.kill(new GitPluginError(void 0, "abort", "Abort signal received"));
+            context.kill(new GitPluginError(void 0, "abort", "Abort signal received"));
           }
           signal.addEventListener("abort", kill);
-          context2.spawned.on("close", () => signal.removeEventListener("abort", kill));
+          context.spawned.on("close", () => signal.removeEventListener("abort", kill));
         }
       };
       const onSpawnBefore = {
         type: "spawn.before",
-        action(_data, context2) {
+        action(_data, context) {
           if (signal.aborted) {
-            context2.kill(new GitPluginError(void 0, "abort", "Abort already signaled"));
+            context.kill(new GitPluginError(void 0, "abort", "Abort already signaled"));
           }
         }
       };
@@ -26134,11 +26134,11 @@ var require_cjs = __commonJS({
     } = {}) {
       return {
         type: "spawn.args",
-        action(args, context2) {
+        action(args, context) {
           args.forEach((current, index) => {
             const next = index < args.length ? args[index + 1] : "";
             allowUnsafeProtocolOverride || preventProtocolOverride(current, next);
-            allowUnsafePack || preventUploadPack(current, context2.method);
+            allowUnsafePack || preventUploadPack(current, context.method);
           });
           return args;
         }
@@ -26301,11 +26301,11 @@ var require_cjs = __commonJS({
     function errorDetectionPlugin(config) {
       return {
         type: "task.error",
-        action(data, context2) {
+        action(data, context) {
           const error = config(data.error, {
-            stdErr: context2.stdErr,
-            stdOut: context2.stdOut,
-            exitCode: context2.exitCode
+            stdErr: context.stdErr,
+            stdOut: context.stdOut,
+            exitCode: context.exitCode
           });
           if (Buffer.isBuffer(error)) {
             return { error: new GitError(void 0, error.toString("utf-8")) };
@@ -26351,9 +26351,9 @@ var require_cjs = __commonJS({
               plugins.forEach((plugin2) => this.plugins.delete(plugin2));
             };
           }
-          exec(type, data, context2) {
+          exec(type, data, context) {
             let output = data;
-            const contextual = Object.freeze(Object.create(context2));
+            const contextual = Object.freeze(Object.create(context));
             for (const plugin of this.plugins) {
               if (plugin.type === type) {
                 output = plugin.action(output, contextual);
@@ -26369,18 +26369,18 @@ var require_cjs = __commonJS({
       const progressMethods = ["checkout", "clone", "fetch", "pull", "push"];
       const onProgress = {
         type: "spawn.after",
-        action(_data, context2) {
+        action(_data, context) {
           var _a2;
-          if (!context2.commands.includes(progressCommand)) {
+          if (!context.commands.includes(progressCommand)) {
             return;
           }
-          (_a2 = context2.spawned.stderr) == null ? void 0 : _a2.on("data", (chunk) => {
+          (_a2 = context.spawned.stderr) == null ? void 0 : _a2.on("data", (chunk) => {
             const message = /^([\s\S]+?):\s*(\d+)% \((\d+)\/(\d+)\)/.exec(chunk.toString("utf8"));
             if (!message) {
               return;
             }
             progress({
-              method: context2.method,
+              method: context.method,
               stage: progressEventStage(message[1]),
               progress: asNumber(message[2]),
               processed: asNumber(message[3]),
@@ -26391,8 +26391,8 @@ var require_cjs = __commonJS({
       };
       const onArgs = {
         type: "spawn.args",
-        action(args, context2) {
-          if (!progressMethods.includes(context2.method)) {
+        action(args, context) {
+          if (!progressMethods.includes(context.method)) {
             return args;
           }
           return including(args, progressCommand);
@@ -26437,7 +26437,7 @@ var require_cjs = __commonJS({
       if (block > 0) {
         return {
           type: "spawn.after",
-          action(_data, context2) {
+          action(_data, context) {
             var _a2, _b;
             let timeout;
             function wait() {
@@ -26446,20 +26446,20 @@ var require_cjs = __commonJS({
             }
             function stop() {
               var _a3, _b2;
-              (_a3 = context2.spawned.stdout) == null ? void 0 : _a3.off("data", wait);
-              (_b2 = context2.spawned.stderr) == null ? void 0 : _b2.off("data", wait);
-              context2.spawned.off("exit", stop);
-              context2.spawned.off("close", stop);
+              (_a3 = context.spawned.stdout) == null ? void 0 : _a3.off("data", wait);
+              (_b2 = context.spawned.stderr) == null ? void 0 : _b2.off("data", wait);
+              context.spawned.off("exit", stop);
+              context.spawned.off("close", stop);
               timeout && clearTimeout(timeout);
             }
             function kill() {
               stop();
-              context2.kill(new GitPluginError(void 0, "timeout", `block timeout reached`));
+              context.kill(new GitPluginError(void 0, "timeout", `block timeout reached`));
             }
-            stdOut && ((_a2 = context2.spawned.stdout) == null ? void 0 : _a2.on("data", wait));
-            stdErr && ((_b = context2.spawned.stderr) == null ? void 0 : _b.on("data", wait));
-            context2.spawned.on("exit", stop);
-            context2.spawned.on("close", stop);
+            stdOut && ((_a2 = context.spawned.stdout) == null ? void 0 : _a2.on("data", wait));
+            stdErr && ((_b = context.spawned.stderr) == null ? void 0 : _b.on("data", wait));
+            context.spawned.on("exit", stop);
+            context.spawned.on("close", stop);
             wait();
           }
         };
@@ -30693,12 +30693,12 @@ var require_state_toggle = __commonJS({
     function factory(key, state, ctx) {
       return enter;
       function enter() {
-        var context2 = ctx || this;
-        var current = context2[key];
-        context2[key] = !state;
+        var context = ctx || this;
+        var current = context[key];
+        context[key] = !state;
         return exit;
         function exit() {
-          context2[key] = current;
+          context[key] = current;
         }
       }
     }
@@ -38283,28 +38283,28 @@ var require_set_options2 = __commonJS({
       self.options = options;
       return self;
     }
-    function validateBoolean(context2, name, def) {
-      var value = context2[name];
+    function validateBoolean(context, name, def) {
+      var value = context[name];
       if (value == null) {
         value = def;
       }
       if (typeof value !== "boolean") {
         raise(value, "options." + name);
       }
-      context2[name] = value;
+      context[name] = value;
     }
-    function validateNumber(context2, name, def) {
-      var value = context2[name];
+    function validateNumber(context, name, def) {
+      var value = context[name];
       if (value == null) {
         value = def;
       }
       if (isNaN(value)) {
         raise(value, "options." + name);
       }
-      context2[name] = value;
+      context[name] = value;
     }
-    function validateString(context2, name, def, map) {
-      var value = context2[name];
+    function validateString(context, name, def, map) {
+      var value = context[name];
       if (value == null) {
         value = def;
       }
@@ -38312,17 +38312,17 @@ var require_set_options2 = __commonJS({
       if (!(value in map)) {
         raise(value, "options." + name);
       }
-      context2[name] = value;
+      context[name] = value;
     }
-    function validateFunction(context2, name, def) {
-      var value = context2[name];
+    function validateFunction(context, name, def) {
+      var value = context[name];
       if (value == null) {
         value = def;
       }
       if (typeof value !== "function") {
         raise(value, "options." + name);
       }
-      context2[name] = value;
+      context[name] = value;
     }
     function encodeFactory(type) {
       var options = {};
@@ -39446,7 +39446,6 @@ var unified = require_unified();
 var parse = require_remark_parse();
 var stringify = require_remark_stringify();
 var visit = require_unist_util_visit();
-var { context } = require("esbuild");
 var toAst = (markdown) => unified().use(parse).parse(markdown);
 var toMarkdown = (ast) => unified().use(stringify).stringify(ast);
 var mainDir = ".";
