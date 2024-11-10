@@ -47,10 +47,11 @@ async function translateReadme() {
       "utf8"
     );
     core.setCommandEcho(true);
+    await git.add('*.md');
     console.log(`README.${lang}.md Translated.`);
   } catch (error) {
-    console.error("Error during translation:", error.message);
-    process.exit(1);
+    console.error("Error during translation:", error);
+    console.dir(error, {depth: Infinity});
   }
 }
 
