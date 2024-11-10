@@ -7,8 +7,14 @@ on:
         type: string
         description: 'The Language to Translate'
         default: 'es'
+        required: false
   workflow_dispatch:
-
+    inputs:
+      branch: 
+        type: string
+        description: 'The Branch to commit the changes'
+        default: 'master'
+        required: true
 jobs:
   test:
     strategy:
@@ -27,11 +33,33 @@ jobs:
           file: "README.md"
           language: ${{ matrix.lang }}
 
-      - name: Commit and Push
-        uses: offensive-vk/auto-commit-push@master
-        with: 
-          branch: ${{ github.ref_name }}
-          name: 'TheHamsterBot'
-          email: 'TheHamsterBot@outlook.com'
-          github-token: ${{ secrets.BOT_TOKEN }}
-          message: 'CI: Translated Markdown [${{ matrix.lang }}] File.'
+      - name: Import GPG Key
+        id: gpg
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_config_global: true
+          trust_level: 5
+
+      - name: Verify GPG Key
+        run: |
+          gpg --list-secret-keys --keyid-format LONG
+          git config --global --list
+
+      - name: Commit & Push Changes
+        run: |
+          sleep 5
+          git fetch && git pull --verbose
+          git config --local user.name "Hamster [bot]"
+          git config --local user.email "TheHamsterBot@outlook.com"
+          git add .
+          git commit -m "📚 Updated Automated Translations - ${{ matrix.lang }}
+
+
+          Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
