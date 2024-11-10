@@ -39440,7 +39440,6 @@ var filePath = core.getInput("file") || "README.md";
 var lang = core.getInput("language") || "es";
 var $ = require_src();
 var simpleGit = require_cjs();
-simpleGit().clean(simpleGit.CleanOptions.FORCE);
 var git = simpleGit();
 var unified = require_unified();
 var parse = require_remark_parse();

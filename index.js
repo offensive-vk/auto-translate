@@ -10,7 +10,6 @@ const filePath = core.getInput("file") || "README.md";
 const lang = core.getInput("language") || "es";
 const $ = require("@iamtraction/google-translate");
 const simpleGit = require("simple-git");
-simpleGit().clean(simpleGit.CleanOptions.FORCE);
 const git = simpleGit();
 const unified = require("unified");
 const parse = require("remark-parse");
